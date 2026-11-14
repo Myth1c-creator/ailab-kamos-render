@@ -142,19 +142,18 @@ export function buildCta(M: Media, SR: Record<Key, Src>): World {
     const Z = 1 + 0.015 * Math.max(0, t - S.posli); // the slow push of the whole CTA
     const at = (x: number, y: number, w: number): [number, number, number] => [540 + (x - 540) * Z, 960 + (y - 960) * Z, w * Z];
     const beatK = BEATS.reduce((m, b) => Math.max(m, 0.05 * pulse(t, b, 9) * (t >= b ? 1 : 0)), 0);
-    const burst = clamp((t - S.lockup) / 0.3);
+    const burst = clamp((t - S.lockup) / 0.1); // the cards fly off to the sides in 6 f
 
     // ── the cards: they arrive on POŠLI, sway, pulse on the beats, burst at the camera on the lockup ──
     SR.k1.play(t, S.posli, 1, 30);
     SR.k2.play(t, S.posli, 1, 30);
-    const cardsOn = t >= S.posli && t < S.lockup + 0.32;
+    const cardsOn = t >= S.posli && t < S.lockup + 0.11;
     for (const [c, side, x0, y0] of [[cA, -1, 300, 590], [cB, 1, 780, 640]] as [typeof cA, number, number, number][]) {
       c.g.visible = cardsOn;
       if (!cardsOn) continue;
       const a = t - S.posli;
       const pop = lerp(1.6, 1, outBack(clamp(a / (9 / 60)), 1.2));
-      const [x, y, w] = at(x0 + 14 * Math.sin(t * 1.3 + side) + side * 520 * burst * burst, y0 + 16 * Math.sin(t * 1.7 + side * 2) + 50 * Math.sin(t * 0.9 + side), 400 * pop * (1 + beatK) * (1 + 2.6 * outCubic(burst)));
-      c.setAspect(9 / 16, 1 + 1.5 * outCubic(burst)); // the burst zooms on the face, not on the body
+      const [x, y, w] = at(x0 + 14 * Math.sin(t * 1.3 + side) + side * 1000 * burst * burst, y0 + 16 * Math.sin(t * 1.7 + side * 2) + 50 * Math.sin(t * 0.9 + side), 400 * pop * (1 + beatK));
       place(c.g, base, x, y, w, 1, D - 0.2 - 0.9 * burst, [0.05 * Math.sin(t * 1.1) + 0.5 * burst * side, -side * (0.3 + 0.06 * Math.sin(t * 1.3)) + 1.3 * burst * side, side * (0.07 + 0.03 * Math.sin(t * 1.9)) + 0.5 * burst * side]);
     }
     // ── the paper plane ──

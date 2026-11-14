@@ -176,7 +176,7 @@ export function buildIntro(M: Media, SR: Record<Key, Src>): World {
       const k = CARD.w / (1080 * OV);
       shr.set(base, lerp(Math.max(OV, cs.z), OV, e), FX, FY, { dx: lerp(cs.p[0], CARD.x - 540, e), dy: lerp(cs.p[1], CARD.y - 960, e), sc: lerp(1, k, e), roll: lerp(cs.roll, 0.06, e), ry: lerp(cs.ry, -0.25, e) });
     } else shr.hide();
-    scan.mesh.visible = hookOn && t > 0.1 && t < 0.85;
+    scan.mesh.visible = false; // (the old scan streak was a 4500-unit additive plane: it whitened the whole frame 0.2-0.8 s)
     if (scan.mesh.visible) {
       const u = (t - 0.1) / 0.75;
       place(scan.mesh, base, 540, lerp(520, 1400, u), 1200, 1, D - 0.5, [0, 0, -0.05]);
