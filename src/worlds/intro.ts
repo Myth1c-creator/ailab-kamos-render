@@ -76,7 +76,7 @@ export function buildIntro(M: Media, SR: Record<Key, Src>): World {
   const [FX, FY] = FOCUS.h1;
   // ── the hook: the background layer (blurred by the DOF, moves less) and the face layer (an oval cut-out, moves more) ──
   const mask = maskTex();
-  const bg = mkLayer(scene, SR.h1, 0, D + 1.6);
+  const bg = mkLayer(scene, SR.h1, 0, D + 0.6); // ONE flat full-frame layer (no cut-out face, no parallax): only the camera moves
   const face = mkLayer(scene, SR.h1, 1, D + 0.6, mask);
   const shr = mkLayer(scene, SR.h1, 2, D + 0.3); // the frozen frame shrinking into the card
   const scan = streak(1100, 120);
@@ -164,8 +164,8 @@ export function buildIntro(M: Media, SR: Record<Key, Src>): World {
     mask.repeat.set(Math.max(0.2, (0.5 * 1080 * OV) / rx_), Math.max(0.2, (0.5 * 1920 * OV) / ry_));
     const swim = 14 * Math.sin(t * 2.3);
     if (hookOn) {
-      bg.set(base, Math.max(OV, cs.z * 0.9), FX, FY, { dx: cs.p[0] * 0.55, dy: cs.p[1] * 0.55 + swim * 0.5, roll: cs.roll, ry: cs.ry * 0.6, rx: cs.rx * 0.6, bright: 0.8 - 0.5 * bp });
-      face.set(base, Math.max(OV, cs.z), FX, FY, { dx: cs.p[0], dy: cs.p[1] + swim, roll: cs.roll, ry: cs.ry, rx: cs.rx, bright: 1 - 0.75 * bp + (bp > 0 ? 0.35 * Math.sin(f60 * 9) : 0) });
+      bg.set(base, Math.max(OV, cs.z), FX, FY, { dx: cs.p[0], dy: cs.p[1], roll: cs.roll, ry: cs.ry, rx: cs.rx, bright: 1 - 0.75 * bp + (bp > 0 ? 0.35 * Math.sin(f60 * 9) : 0) });
+      face.hide();
     } else {
       bg.hide();
       face.hide();
@@ -261,14 +261,14 @@ export function buildIntro(M: Media, SR: Record<Key, Src>): World {
     LS.update(t, t < S.panel ? S.neni : S.panel, V(0, 0.2, 1.3), 2.4, 0.6);
 
     // ── the grade ──
-    const fl = f60 < 4 ? [0.55, 0.35, 0.2, 0.08][Math.floor(f60)] : 0;
+    const fl = f60 < 3 ? [0.2, 0.1, 0.04][Math.floor(f60)] : 0;
     const one = (t0: number, a: number, b = 0) => (t >= t0 && t < t0 + sf(1) ? a : t >= t0 + sf(1) && t < t0 + sf(2) ? b : 0);
     const gl = (t0: number, n = 3) => (t >= t0 && t < t0 + sf(n) ? 1 : 0);
     const glitch = Math.max(gl(S.punch0, 2), gl(S.cutA), gl(S.cutB), gl(S.cutC), gl(S.neni, 5), gl(S.panel, 3), gl(S.p1, 2), gl(S.p2, 2));
     return {
       focus: t < S.shrink ? D + 0.6 : D,
       ap: t < S.shrink ? 38 : 12,
-      flash: Math.max(fl, one(S.punch0, 0.25), one(S.cutA, 0.3), one(S.cutB, 0.3), one(S.cutC, 0.3), one(S.neni, 0.9, 0.5), one(S.panel, 0.35), one(S.udelal, 0.4, 0.15), env(t, IMPS, 30) * 0.05) * (1 - dk),
+      flash: Math.max(fl, one(S.punch0, 0.15), one(S.cutA, 0.3), one(S.cutB, 0.3), one(S.cutC, 0.3), one(S.neni, 0.9, 0.5), one(S.panel, 0.35), one(S.udelal, 0.4, 0.15), env(t, IMPS, 30) * 0.05) * (1 - dk),
       ca: 0.3 + env(t, IMPS, 14) * 1.3 + (f60 < 3 ? 3 : 0) + glitch * 2.8 + bp * 4 + (t >= S.neni && t < S.neni + sf(4) ? 4 : 0),
       glitch: glitch * 0.9,
       vig: 0.1 * dk,

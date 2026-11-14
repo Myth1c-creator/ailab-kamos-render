@@ -154,6 +154,7 @@ export function buildCta(M: Media, SR: Record<Key, Src>): World {
       const a = t - S.posli;
       const pop = lerp(1.6, 1, outBack(clamp(a / (9 / 60)), 1.2));
       const [x, y, w] = at(x0 + 14 * Math.sin(t * 1.3 + side) + side * 520 * burst * burst, y0 + 16 * Math.sin(t * 1.7 + side * 2) + 50 * Math.sin(t * 0.9 + side), 400 * pop * (1 + beatK) * (1 + 2.6 * outCubic(burst)));
+      c.setAspect(9 / 16, 1 + 1.5 * outCubic(burst)); // the burst zooms on the face, not on the body
       place(c.g, base, x, y, w, 1, D - 0.2 - 0.9 * burst, [0.05 * Math.sin(t * 1.1) + 0.5 * burst * side, -side * (0.3 + 0.06 * Math.sin(t * 1.3)) + 1.3 * burst * side, side * (0.07 + 0.03 * Math.sin(t * 1.9)) + 0.5 * burst * side]);
     }
     // ── the paper plane ──
